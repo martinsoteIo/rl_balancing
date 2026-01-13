@@ -1,0 +1,167 @@
+<mujoco model="juggling_platform_3d">
+  <option cone="elliptic" timestep="3e-3" integrator="implicitfast"/>
+  <compiler angle="radian" coordinate="local" meshdir="/home/admin/workspace/src/descriptions/juggling_platform_3d_description/meshes"/>
+  <option gravity="0 0 -9.81"/>
+  
+  <default>
+    <joint damping="0.0"/>
+    <pair solref="0.05 0.03" solimp="0.001 0.005 4 0.5 0.001"/>
+    <geom type="mesh" contype="1" conaffinity="1" rgba="0.9 0.9 0.9 1"/>
+  </default>
+
+  <statistic center="0.0 0 0.2" extent="1.0"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="90" elevation="-20"/>
+    <scale framelength="0.12" framewidth="0.01"/>
+  </visual>
+
+  <asset>
+    <mesh name="motor" file="motor.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="arm" file="arm.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="arm_3d" file="arm_3d.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="platform" file="platform_3d.stl" scale="0.001 0.001 0.001"/>
+    <mesh name="platform_collision" file="platform_3d_collision.stl" scale="0.001 0.001 0.001"/>
+
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3"
+             markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0 1.5" dir="0 0 -1" directional="true"/>
+    <geom name="floor" size="0.5 0.5 0.05" type="plane" rgba="1 1 1 0"/> <!-- material="groundplane"-->
+    <body name="first_motor" euler="0 0 0.785398163" pos="-0.055343798 -0.055343798 0">
+      <geom mesh="motor"/>
+      <inertial pos="0 0 0.004761" mass="23.468" diaginertia="1.031498 1.057814 1.273548"/>
+    
+         <body name="first_low_arm" euler="0 -1.047197551 0" pos="0 0 0.014">
+            <joint name="first_motor_joint" type="hinge" axis="0 1 0" range="-0.3 1" limited="true"/>
+            <geom mesh="arm" pos="0 0 0.04"/>
+            <inertial pos="0 0 0.04" mass="0.107464" diaginertia="0.000052495 0.00004983497 0.000004385676"/>
+
+            <body name="first_top_arm" euler="0 2.094395102 0" pos="0 0 0.08">
+                <joint name="first_arm_joint" type="hinge" axis="0 1 0" range="-2 0.7"/>
+                <geom mesh="arm_3d" pos="0 0 0.04"/>
+                <inertial pos="0 0 0.04" mass="0.094881" diaginertia="0.000040710378 0.000038289782 0.000003912023"/>
+
+                <body name="platform" euler="0 -1.047197551 1.570796327" pos="0 0 0.078">
+                    <!-- <joint name="first_platform_joint" type="ball"/> -->
+                    <joint name="first_platform_joint_yaw" type="hinge" axis="0 0 1" limited="true" range="-2 2"/>
+                    <joint name="first_platform_joint_pitch" type="hinge" axis="0 1 0" limited="true" range="-2 2"/>
+                    <joint name="first_platform_joint_roll" type="hinge" axis="1 0 0" limited="true" range="-0.3 0.8"/>
+                    <geom mesh="platform" euler="0 0 1.570796327" pos="0 -0.08 0.003" contype="0" conaffinity="0"/>
+                    <geom name="platform_collision" mesh="platform_collision" pos="0 -0.08 0.003" euler="0 0 1.570796327" rgba="1 1 1 1" friction="0 0 0"/>
+                    <inertial pos="0.0 -0.08 0.0078" mass="0.3179939" diaginertia="0.00103 0.00103 0.002056"/>
+
+                    <body name="second_top_arm" pos="-0.069282032 -0.12 0" quat="0.8365163 -0.1294093 0.4829629 0.2241439">
+                        <!-- <joint name="second_platform_joint" type="ball"/> -->
+                        <joint name="second_platform_joint_yaw" type="hinge" axis="0 0 1" limited="true" range="-2 2"/>
+                        <joint name="second_platform_joint_pitch" type="hinge" axis="0 1 0" limited="true" range="-0.8 0.3"/>
+                        <joint name="second_platform_joint_roll" type="hinge" axis="1 0 0" limited="true" range="-2 2"/>
+                        <geom mesh="arm_3d" pos="0 0 -0.038" euler="0 0 0"/>
+                        <inertial pos="0 0 -0.038" mass="0.094881" diaginertia="0.000040710378 0.000038289782 0.000003912023"/>
+
+                        <body name="second_low_arm" euler="0 -2.094395102 0" pos="0 0 -0.078">
+                            <joint name="second_arm_joint" type="hinge" axis="0 1 0" range="-0.7 2"/>
+                            <geom mesh="arm" pos="0 0 -0.04"/>
+                            <inertial pos="0 0 -0.04" mass="0.107464" diaginertia="0.000052495 0.00004983497 0.000004385676"/>
+
+                            <body name="second_motor" pos="0 0 -0.08" euler="0 1.047197551 0">
+                                <joint name="second_motor_joint" type="hinge" axis="0 1 0" range="-1 0.3" limited="true"/>
+                                <geom mesh="motor" pos="0 0 -0.014"/>
+                                <inertial pos="0 0 0.004761" mass="23.468" diaginertia="1.031498 1.057814 1.273548"/>
+                            </body>
+                        </body>
+                    </body>
+
+                    <body name="third_top_arm" pos="0.069282032 -0.12 0" quat="0.2241439 -0.4829629 0.1294093 0.8365163">
+                        <!-- <joint name="third_platform_joint" type="ball"/> -->
+                        <joint name="third_platform_joint_yaw" type="hinge" axis="0 0 1" limited="true" range="-2 2"/>
+                        <joint name="third_platform_joint_pitch" type="hinge" axis="0 1 0" limited="true" range="-0.8 0.3"/>
+                        <joint name="third_platform_joint_roll" type="hinge" axis="1 0 0" limited="true" range="-2 2"/>
+                        <geom mesh="arm_3d" pos="0 0 -0.038"/>
+                        <inertial pos="0 0 -0.038" mass="0.094881" diaginertia="0.000040710378 0.000038289782 0.000003912023"/>
+
+                        <body name="third_low_arm" euler="0 -2.094395102 0" pos="0 0 -0.078">
+                            <joint name="third_arm_joint" type="hinge" axis="0 1 0" range="-0.7 2"/>
+                            <geom mesh="arm" pos="0 0 -0.04"/>
+                            <inertial pos="0 0 -0.04" mass="0.107464" diaginertia="0.000052495 0.00004983497 0.000004385676"/>
+
+                            <body name="third_motor" pos="0 0 -0.08" euler="0 1.047197551 0">
+                                <joint name="third_motor_joint" type="hinge" axis="0 1 0" range="-1 0.3" limited="true"/>
+                                <geom mesh="motor" pos="0 0 -0.014"/>
+                                <inertial pos="0 0 0.004761" mass="23.468" diaginertia="1.031498 1.057814 1.273548"/>
+                            </body>
+                        </body>
+                    </body>
+                </body> 
+            </body>  
+        </body> 
+    </body>   
+    <!-- <site name="debug_anchor_1" pos="-0.055343798 -0.055343798 0" size="0.008" rgba="1 0 0 1"/>
+    <site name="debug_anchor_2" pos="0.075601083 -0.020257249 0" size="0.008" rgba="0 0 1 1"/>
+    <site name="debug_anchor_3" pos="-0.020257249 0.075601083 0" size="0.008" rgba="0 1 0 1"/> -->
+
+    <body name="ball" pos="0 0 0.2" euler="0 0 0">
+      <freejoint name="ball_joint"/>
+      <inertial pos="0 0 0" mass="0.027" diaginertia="4.3e-6 4.3e-6 4.3e-6"/>
+      <geom name="ball" type="sphere" size="0.02" rgba="1 0.729 0 1" friction="0 0 0"/>
+    </body>
+  </worldbody>
+
+  <equality>
+    <!-- <connect body1="platform" body2="second_top_arm" anchor="0.075601083 -0.020257249 0" active="true" solref="0.05 1"/>
+    <connect body1="platform" body2="third_top_arm" anchor="-0.020257249 0.075601083 0" active="true" solref="0.05 1"/> -->
+    
+    <weld body1="world" body2="second_motor" anchor="0.075601083 -0.020257249 0" active="true" solref="0.05 1"/>
+    <weld body1="world" body2="third_motor" anchor="-0.020257249 0.075601083 0" active="true" solref="0.05 1"/>
+  </equality>
+
+  <contact>
+    <exclude body1="first_motor" body2="ball"/>
+    <exclude body1="second_motor" body2="ball"/>
+    <exclude body1="third_motor" body2="ball"/>
+
+    <exclude body1="first_low_arm" body2="ball"/>
+    <exclude body1="first_top_arm" body2="ball"/>
+    <exclude body1="second_low_arm" body2="ball"/>
+    <exclude body1="second_top_arm" body2="ball"/>
+    <exclude body1="third_low_arm" body2="ball"/>
+    <exclude body1="third_top_arm" body2="ball"/>
+
+    <exclude body1="platform" body2="first_motor"/>
+    <exclude body1="platform" body2="second_motor"/>
+    <exclude body1="platform" body2="third_motor"/>
+    <exclude body1="platform" body2="first_low_arm"/>
+    <exclude body1="platform" body2="first_top_arm"/>
+    <exclude body1="platform" body2="second_low_arm"/>
+    <exclude body1="platform" body2="second_top_arm"/>
+    <exclude body1="platform" body2="third_low_arm"/>
+    <exclude body1="platform" body2="third_top_arm"/>
+
+    <exclude body1="first_low_arm" body2="first_top_arm"/>
+    <exclude body1="first_low_arm" body2="first_motor"/>
+    <exclude body1="second_low_arm" body2="second_top_arm"/>
+    <exclude body1="second_low_arm" body2="second_motor"/>
+    <exclude body1="third_low_arm" body2="third_top_arm"/>
+    <exclude body1="third_low_arm" body2="third_motor"/>
+    <pair geom1="platform_collision" geom2="ball"/>
+    <pair geom1="floor" geom2="ball"/>
+  </contact>
+
+  <actuator>
+    <position name="first_motor" joint="first_motor_joint" kp="50" kv="2.5" ctrlrange="-0.3 1"/>
+    <position name="second_motor" joint="second_motor_joint" kp="50" kv="2.5" ctrlrange="-1 0.3"/>
+    <position name="third_motor" joint="third_motor_joint" kp="50" kv="2.5" ctrlrange="-1 0.3"/>
+  </actuator> 
+
+  <!-- <keyframe>
+    <key name="home" qpos="0 0 0 0 0 0 0 0 0.2 1 0 0 0" 
+    ctrl="-1.047197551 -1.047197551"/>
+  </keyframe> -->
+
+</mujoco>

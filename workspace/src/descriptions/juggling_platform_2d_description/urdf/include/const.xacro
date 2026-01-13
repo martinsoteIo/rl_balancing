@@ -1,0 +1,61 @@
+<?xml version="1.0"?>
+
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- simplified collision value -->
+    <xacro:property name="platform_width" value="0.2"/> 
+    <xacro:property name="platform_length" value="0.2"/>
+    <xacro:property name="platform_height" value="0.01"/>
+ 
+    <!-- joint limits -->
+    <xacro:property name="damping" value="0.0"/>
+    <xacro:property name="friction" value="0.0"/>
+    <xacro:property name="motor_position_max" value="3"/>
+    <xacro:property name="motor_position_min" value="-3"/>
+    <xacro:property name="motor_velocity_max" value="30.1"/>
+    <xacro:property name="motor_torque_max" value="23.7"/>
+    <xacro:property name="arm_position_max" value="3"/>
+    <xacro:property name="arm_position_min" value="-3"/>
+    <xacro:property name="arm_velocity_max" value="30.1"/>
+    <xacro:property name="arm_torque_max" value="23.7"/>
+    <xacro:property name="platform_position_max" value="3"/>
+    <xacro:property name="platform_position_min" value="-3"/>
+    <xacro:property name="platform_velocity_max" value="20.06"/>
+    <xacro:property name="platform_torque_max" value="35.55"/>
+
+    <!-- dynamics inertial value -->
+    <!-- motor -->
+    <xacro:property name="motor_mass" value="0.023468"/>
+    <xacro:property name="motor_com_x" value="0.0"/>
+    <xacro:property name="motor_com_y" value="0.00"/>
+    <xacro:property name="motor_com_z" value="0.004761"/>
+    <xacro:property name="motor_ixx" value="1.031498E-6"/>
+    <xacro:property name="motor_ixy" value="0.0"/>
+    <xacro:property name="motor_ixz" value="-2.287E-18"/>
+    <xacro:property name="motor_iyy" value="1.057814E-6"/>
+    <xacro:property name="motor_iyz" value="0.0"/>
+    <xacro:property name="motor_izz" value="1.273548E-6"/>
+    <!-- arm -->
+    <xacro:property name="arm_mass" value="6.921"/>
+    <xacro:property name="arm_com_x" value="0.021112"/>
+    <xacro:property name="arm_com_y" value="0.00"/>
+    <xacro:property name="arm_com_z" value="-0.005366"/>
+    <xacro:property name="arm_ixx" value="0.02448"/>
+    <xacro:property name="arm_ixy" value="0.00012166"/>
+    <xacro:property name="arm_ixz" value="0.0014849"/>
+    <xacro:property name="arm_iyy" value="0.098077"/>
+    <xacro:property name="arm_iyz" value="-3.12E-05"/>
+    <xacro:property name="arm_izz" value="0.107"/>
+    <!-- platform -->
+    <xacro:property name="platform_mass" value="6.921"/>
+    <xacro:property name="platform_com_x" value="0.021112"/>
+    <xacro:property name="platform_com_y" value="0.00"/>
+    <xacro:property name="platform_com_z" value="-0.005366"/>
+    <xacro:property name="platform_ixx" value="0.02448"/>
+    <xacro:property name="platform_ixy" value="0.00012166"/>
+    <xacro:property name="platform_ixz" value="0.0014849"/>
+    <xacro:property name="platform_iyy" value="0.098077"/>
+    <xacro:property name="platform_iyz" value="-3.12E-05"/>
+    <xacro:property name="platform_izz" value="0.107"/>
+
+</robot>

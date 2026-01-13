@@ -1,0 +1,43 @@
+services:
+    rl_bouncer:
+        image: rl_bouncer:latest
+        privileged: true
+        runtime: nvidia
+        build:
+            context: ./
+            dockerfile: ./docker/dockerfile
+            pull: true
+            args:
+                PYTORCH_VERSION: "2.5.1"
+                CUDA_MAJOR: 12
+                CUDA_MINOR: 4
+                PYTHON_VERSION: "3.11"
+                UBUNTU_RELEASE_YEAR: 22
+                ROS_DISTRO: humble
+                MUJOCO_VERSION: "3.3.4"
+                CPU_ARCH: x86_64
+                USERNAME: admin
+                USER_UID: 1000
+                USER_GID: 1000
+        network_mode: host
+        init: true
+        volumes:
+            - ./workspace/:/home/admin/workspace
+            - /dev:/dev
+            - /tmp/.X11-unix:/tmp/.X11-unix
+            - ${HOME}/.Xauthority:/home/${USERNAME:-admin}/.Xauthority:rw
+        environment:
+            - DISPLAY=${DISPLAY}
+            - LD_LIBRARY_PATH=/usr/local/cuda-12.1/lib64:${LD_LIBRARY_PATH}
+            - ROS_DOMAIN_ID
+            - CYCLONEDDS_NETWORK_INTERFACE=${CYCLONEDDS_NETWORK_INTERFACE:-lo}
+            - CYCLONEDDS_PEER_ADDRESSES=${CYCLONEDDS_PEER_ADDRESSES:-127.0.0.1}
+            - CYCLONEDDS_USE_MULTICAST=${CYCLONEDDS_USE_MULTICAST:-false}
+            - RMW_IMPLEMENTATION=${RMW_IMPLEMENTATION:-rmw_cyclonedds_cpp}
+            - QT_X11_NO_MITSHM=1
+            - USER_UID=${USER_UID:-1000}
+            - USERNAME=${USERNAME:-admin}
+            - NVIDIA_DRIVER_CAPABILITIES=all
+            - NVIDIA_VISIBLE_DEVICES=all
+        working_dir: /home/admin/workspace
+        command: "sleep infinity"

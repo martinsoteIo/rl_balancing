@@ -1,0 +1,224 @@
+ARG PYTORCH_VERSION="2.5.1"
+ARG CUDA_MAJOR="12"
+ARG CUDA_MINOR="4"
+ARG UBUNTU_RELEASE_YEAR="22"
+
+# ===============================================================
+# Stage 1: Build LuisaRender
+# ===============================================================
+FROM pytorch/pytorch:${PYTORCH_VERSION}-cuda${CUDA_MAJOR}.${CUDA_MINOR}-cudnn9-devel AS genesis_builder
+
+LABEL maintainer="Martín Sotelo"
+
+ARG PYTHON_VERSION="3.11"
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    manpages-dev \
+    libvulkan-dev \
+    zlib1g-dev \
+    xorg-dev libglu1-mesa-dev \
+    libsnappy-dev \
+    software-properties-common \
+    git \
+    curl \
+    wget
+RUN add-apt-repository ppa:ubuntu-toolchain-r/test && \
+    apt update && \
+    apt install -y --no-install-recommends \
+    gcc-11 \
+    g++-11 \
+    gcc-11 g++-11 patchelf && \
+    rm -rf /var/lib/apt/lists/*
+
+# Set GCC-11 and G++-11 as the default
+RUN update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-11 110 && \
+    update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-11 110
+
+# Install Rust for build requirements
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+
+RUN pip install "pybind11[global]"
+
+# Install CMake
+RUN wget https://github.com/Kitware/CMake/releases/download/v3.31.0-rc2/cmake-3.31.0-rc2-linux-x86_64.sh && \
+    chmod +x cmake-3.31.0-rc2-linux-x86_64.sh && \
+    ./cmake-3.31.0-rc2-linux-x86_64.sh --skip-license --prefix=/usr/local && \
+    rm cmake-3.31.0-rc2-linux-x86_64.sh
+
+# Build LuisaRender
+WORKDIR /workspace
+RUN git clone https://github.com/Genesis-Embodied-AI/Genesis.git && \
+    cd Genesis && \
+    git submodule update --init --recursive
+COPY docker/genesis/build_luisa.sh /workspace/build_luisa.sh
+RUN chmod +x ./build_luisa.sh && ./build_luisa.sh ${PYTHON_VERSION}
+
+# ===============================================================
+# Stage 2: Runtime Environment
+# ===============================================================
+FROM nvidia/cuda:${CUDA_MAJOR}.${CUDA_MINOR}.0-devel-ubuntu${UBUNTU_RELEASE_YEAR}.04 AS builder
+
+ARG ROS_DISTRO="humble"
+ARG MUJOCO_VERSION=3.3.2
+ARG CPU_ARCH=x86_64
+ARG USERNAME=admin
+ARG USER_UID=1000
+ARG USER_GID=1000
+
+ENV PATH="/usr/local/bin:$PATH"
+ENV DEBIAN_FRONTEND=noninteractive \
+    ROS_PYTHON_VERSION=3 \
+    ROS_VERSION=2 \
+    RMW_IMPLEMENTATION=rmw_cyclonedds_cpp \
+    NVIDIA_DRIVER_CAPABILITIES=all \
+    NVIDIA_VISIBLE_DEVICES=all
+
+# System dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    tmux \
+    git \
+    curl \
+    wget \
+    bash-completion \
+    libgl1 \
+    libgl1-mesa-glx \
+    libegl-dev \
+    libegl1 \
+    libxrender1 \
+    libglib2.0-0 \
+    ffmpeg \
+    libgtk2.0-dev \
+    pkg-config \
+    libvulkan-dev \
+    libgles2 \
+    libglvnd0 \
+    libglx0 \
+    python3 \
+    python3-pip \
+    python3-setuptools \
+    python3-wheel \
+    lsb-release \
+    gnupg \
+    mesa-utils \
+    mesa-common-dev \
+    libglu1-mesa \
+    libgl1-mesa-dri \
+    libx11-dev \
+    libglfw3-dev \
+    libglew-dev \
+    libxext6 \
+    libxrender1 \
+    dbus-x11 \
+    libosmesa6-dev \
+    libgl1-mesa-dev \
+    libglx-mesa0 \
+    && apt clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install ROS 2
+RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] \
+    http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | \
+    tee /etc/apt/sources.list.d/ros2.list > /dev/null && \
+    apt update && apt install -y --no-install-recommends \
+    ros-${ROS_DISTRO}-ros-base \
+    ros-${ROS_DISTRO}-rmw-cyclonedds-cpp \
+    ros-${ROS_DISTRO}-transmission-interface \
+    ros-${ROS_DISTRO}-robot-state-publisher \
+    ros-${ROS_DISTRO}-tf2-ros \
+    ros-${ROS_DISTRO}-joint-state-publisher-gui \
+    ros-${ROS_DISTRO}-rqt \
+    ros-${ROS_DISTRO}-rviz2 \
+    ros-${ROS_DISTRO}-tf-transformations \
+    ros-${ROS_DISTRO}-xacro \
+    python3-colcon-common-extensions \
+    python3-rosinstall-generator python-is-python3 \
+    python3-colcon-mixin python3-rosinstall python3-vcstool python3-rosdep \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install MuJoCo
+ENV MUJOCO_DIR=/opt/mujoco/mujoco-${MUJOCO_VERSION}
+RUN mkdir -p /opt/mujoco && \
+    wget https://github.com/google-deepmind/mujoco/releases/download/${MUJOCO_VERSION}/mujoco-${MUJOCO_VERSION}-linux-${CPU_ARCH}.tar.gz && \
+    tar -xzf mujoco-${MUJOCO_VERSION}-linux-${CPU_ARCH}.tar.gz -C /opt/mujoco && \
+    rm mujoco-${MUJOCO_VERSION}-linux-${CPU_ARCH}.tar.gz
+
+# Install PyTorch
+RUN pip install torch==2.5.1 torchvision==0.20.1 torchaudio==2.5.1
+
+# Create non-root user
+RUN groupadd --gid $USER_GID $USERNAME && \
+    useradd --uid $USER_UID --gid $USER_GID -m $USERNAME && \
+    echo "$USERNAME ALL=(ALL) NOPASSWD:ALL" > /etc/sudoers.d/$USERNAME && \
+    chmod 0440 /etc/sudoers.d/$USERNAME && \
+    usermod -aG video,plugdev,sudo $USERNAME && \
+    chown -R $USERNAME /home/$USERNAME/
+
+USER $USERNAME
+WORKDIR /home/$USERNAME
+
+# Genesis
+RUN pip install --upgrade pip && \
+    pip install --no-cache-dir open3d
+RUN git clone https://github.com/Genesis-Embodied-AI/Genesis.git && \
+    cd Genesis && \
+    git checkout bd1fd4847dd1c1ce0f4ca26a17562a368c55e7ef && \
+    pip install . && \
+    pip install --no-cache-dir PyOpenGL==3.1.5
+
+# Install pip dependencies
+RUN pip install --upgrade pip && \
+    pip install \
+        opencv-python==4.11.0.86 \
+        matplotlib==3.5.1\
+        scikit-image==0.25.2 \
+        open3d \
+        pin \
+        tensorboard \
+        rsl-rl-lib==2.2.4 \
+        numpy==1.24
+
+# Surface reconstruction
+COPY --from=genesis_builder /workspace/Genesis/genesis/ext/ParticleMesher/ParticleMesherPy /opt/conda/lib/python3.11/site-packages/genesis/ext/ParticleMesher/ParticleMesherPy
+ENV LD_LIBRARY_PATH=/opt/conda/lib/python3.11/site-packages/genesis/ext/ParticleMesher/ParticleMesherPy:$LD_LIBRARY_PATH
+
+# Ray Tracing Renderer
+COPY --from=genesis_builder /workspace/Genesis/genesis/ext/LuisaRender/build/bin /opt/conda/lib/python3.11/site-packages/genesis/ext/LuisaRender/build/bin
+COPY docker/genesis/10_nvidia.json /usr/share/glvnd/egl_vendor.d/10_nvidia.json
+COPY docker/genesis/nvidia_icd.json /usr/share/vulkan/icd.d/nvidia_icd.json
+COPY docker/genesis/nvidia_layers.json /etc/vulkan/implicit_layer.d/nvidia_layers.json
+
+# Setup rosdep and source ROS 2
+ENV ROS_DISTRO=${ROS_DISTRO}
+RUN sudo rosdep init && rosdep fix-permissions &&\
+    rosdep update && \
+    echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> ~/.bashrc && \
+    echo 'export MUJOCO_DIR=/opt/mujoco/mujoco-3.3.4' >> ~/.bashrc && \
+    echo 'export MUJOCO_GL=osmesa' >> ~/.bashrc && \
+    echo 'export MUJOCO_PY_MUJOCO_PATH=$MUJOCO_DIR' >> ~/.bashrc && \
+    echo 'export CMAKE_PREFIX_PATH=$MUJOCO_DIR:$CMAKE_PREFIX_PATH' >> ~/.bashrc && \
+    echo 'export PATH=$HOME/.local/bin:$PATH' >> ~/.bashrc && \
+    echo 'export PATH=$PATH:$MUJOCO_DIR/bin' >> ~/.bashrc && \
+    echo 'export LD_LIBRARY_PATH=$MUJOCO_DIR/bin:$LD_LIBRARY_PATH' >> ~/.bashrc && \
+    echo 'export LD_LIBRARY_PATH=/opt/openrobots/lib:$LD_LIBRARY_PATH' >> ~/.bashrc && \
+    echo 'export LD_LIBRARY_PATH=/home/admin/.local/lib/python3.10/site-packages/pymeshlab/lib:$LD_LIBRARY_PATH' >> ~/.bashrc && \
+    echo 'export QT_QPA_PLATFORM_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/qt5/plugins/platforms' >> ~/.bashrc && \
+    echo 'export RCUTILS_COLORIZED_OUTPUT=1' >> ~/.bashrc && \
+    sed -i '39 i force_color_prompt=yes' ~/.bashrc
+
+# Copy entrypoint
+COPY ./docker/entrypoint.sh /entrypoint.sh
+RUN sudo chmod +x /entrypoint.sh
+
+# Copy setup script
+COPY ./scripts/setup.sh /home/admin/scripts/setup.sh
+RUN sudo chmod +x /home/admin/scripts/setup.sh
+
+# Healthcheck
+HEALTHCHECK CMD bash -c "source /opt/ros/${ROS_DISTRO}/setup.bash && ros2 node list || exit 1"
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["bash"]

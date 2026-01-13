@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rl_policies"
+version = "0.1.0"
+description = "Genesis RL Policy Training and Evaluation Package"
+authors = [
+  { name = "Martín Sotelo", email = "martinsot2004@gmail.com" }
+]
+license = "MIT" 
+requires-python = ">=3.6"
+
+[project.scripts]
+juggling_2d_train = "rl_policies.juggling_platform_2d.train:main"
+juggling_2d_eval = "rl_policies.juggling_platform_2d.eval:main"
+juggling_2d_eval_teleop = "rl_policies.juggling_platform_2d.eval_teleop:main"
+juggling_2d_eval_teleop_inverse_kinematics = "rl_policies.juggling_platform_2d.pd_controller.eval_teleop_inverse_kinematics:main"
+juggling_2d_eval_teleop_pd = "rl_policies.juggling_platform_2d.pd_controller.eval_teleop_pd:main"
+
+juggling_3d_train = "rl_policies.juggling_platform_3d.train:main"
+juggling_3d_eval = "rl_policies.juggling_platform_3d.eval:main"
+juggling_3d_eval_teleop = "rl_policies.juggling_platform_3d.eval_teleop:main"
+juggling_3d_eval_teleop_inverse_kinematics = "rl_policies.juggling_platform_3d.pd_controller.eval_teleop_inverse_kinematics:main"
+juggling_3d_eval_teleop_pd = "rl_policies.juggling_platform_3d.pd_controller.eval_teleop_pd:main"
+
+[tool.setuptools.packages.find]
+include = ["rl_policies"]

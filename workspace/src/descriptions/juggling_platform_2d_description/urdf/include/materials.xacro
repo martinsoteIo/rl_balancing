@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<robot>
+
+    <material name="orange">
+        <color rgba="${255/255} ${163/255} ${1/255} 1.0"/>
+    </material>
+
+    <material name="silver">
+        <color rgba="${233/255} ${233/255} ${216/255} 1.0"/>
+    </material>
+
+</robot>
