@@ -54,3 +54,34 @@ The project follows an incremental development strategy, beginning with a restri
 | :---: | :---: |
 | ![2D Demo](docs/assets/2d_demo.gif) | ![3D Demo](docs/assets/3d_demo.gif) |
 | **2 Motors** restricting movement to the XZ plane. | **3 Motors (3-RRS)** allowing full spatial control. |
+
+## Interactive Visualization & Teleop
+
+You can manually test the stability and response of both the Reinforcement Learning policies and the classical PD baselines using the following commands inside the Docker container. 
+
+*Use your **keyboard arrows** to move the target during teleoperation.*
+
+### 2D Planar Platform
+**Classical Control (PD Baseline)**
+```bash
+juggling_2d_eval_teleop_pd
+```
+
+**Reinforcement Learning (RL)**
+```bash
+juggling_2d_eval_teleop
+```
+
+### 3D Spatial Platform (3-RRS Mechanism)
+**Classical Control (PD Baseline)**
+```bash
+juggling_3d_eval_teleop_pd
+```
+
+### 3D Planar Platform
+**Reinforcement Learning (RL)**
+```bash
+juggling_3d_eval_teleop
+```
+
+
