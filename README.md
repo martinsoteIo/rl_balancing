@@ -25,7 +25,7 @@
 Clone this repository using:
 ```
 cd ~/
-git clone https://github.com/martinsoteIo/rl_bouncer.git
+git clone https://github.com/martinsoteIo/rl_balancing.git
 ```
 
 ### Build the Docker Image and Run the Container
@@ -34,10 +34,10 @@ git clone https://github.com/martinsoteIo/rl_bouncer.git
 
 Building the Docker Image and running the container from the Dockerfile using Docker Compose is really simple, you just need to run:
 ```
-cd ~/rl_bouncer/
-docker compose build rl_bouncer
+cd ~/rl_balancing/
+docker compose build rl_balancing
 docker compose up -d
-docker exec -it rl_bouncer-rl_bouncer-1 bash
+docker exec -it rl_balancing-rl_balancing-1 bash
 source install/setup.bash
 colcon build --symlink-install
 pip install -e ./src/rl_policies
@@ -45,7 +45,7 @@ pip install -e ./src/rl_policies
 
 Once the container is running you can attach any terminal to the container by running:
 ```
-docker exec -it rl_bouncer-rl_bouncer-1 bash
+docker exec -it rl_balancing-rl_balancing-1 bash
 ```
 
 ## System Demonstration

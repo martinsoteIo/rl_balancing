@@ -1,6 +1,6 @@
 services:
-    rl_bouncer:
-        image: rl_bouncer:latest
+    rl_balancing:
+        image: rl_balancing:latest
         privileged: true
         runtime: nvidia
         build:
