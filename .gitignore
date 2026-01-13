@@ -47,13 +47,13 @@ workspace/src/rl_policies/logs/xyz_pos_3d_juggling
 workspace/src/rl_policies/logs/xyz_pos_3d_juggling_v2
 workspace/src/rl_policies/logs/xz_bounce_ball_2d
 
-workspace/src/descriptions/juggling_platform_2d_description/urdf/old
-workspace/src/descriptions/juggling_platform_3d_description/urdf/old
-workspace/src/rl_policies/rl_policies/juggling_platform_2d/utils/motors/
-workspace/src/rl_policies/rl_policies/juggling_platform_2d/utils/evaluate_motors_pd.py
-workspace/src/rl_policies/rl_policies/juggling_platform_2d/utils/evaluate_motors_rl.py
+workspace/src/descriptions/balancing_platform_2d_description/urdf/old
+workspace/src/descriptions/balancing_platform_3d_description/urdf/old
+workspace/src/rl_policies/rl_policies/balancing_platform_2d/utils/motors/
+workspace/src/rl_policies/rl_policies/balancing_platform_2d/utils/evaluate_motors_pd.py
+workspace/src/rl_policies/rl_policies/balancing_platform_2d/utils/evaluate_motors_rl.py
 
-workspace/src/rl_policies/rl_policies/juggling_platform_3d/old
+workspace/src/rl_policies/rl_policies/balancing_platform_3d/old
 
 
 *.egg-info

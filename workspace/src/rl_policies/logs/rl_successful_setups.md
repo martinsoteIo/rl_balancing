@@ -7,8 +7,8 @@ This repository contains the trained weights, evaluation scripts, and environmen
 To run any of the experiments listed below, use the main evaluation script with the corresponding experiment name:
 
 ```bash
-juggling_2d_eval_telop.py --exp_name <EXPERIMENT_NAME> --ckpt <CHECKPOINT_NUMBER>
-juggling_3d_eval_telop.py --exp_name <EXPERIMENT_NAME> --ckpt <CHECKPOINT_NUMBER>
+balancing_2d_eval_telop.py --exp_name <EXPERIMENT_NAME> --ckpt <CHECKPOINT_NUMBER>
+balancing_3d_eval_telop.py --exp_name <EXPERIMENT_NAME> --ckpt <CHECKPOINT_NUMBER>
 
 ## Validated Experiments
 
@@ -37,8 +37,8 @@ An extension of Experiment 002 aimed at improving real-world transferability thr
 ### **EXPERIMENT 006: 3D Control (XY Plane)**
 
 - **Log Name:** Experimento006  
-- **Environment Name:** `XYPos3DEnv`  
-- **Environment File:** `xy_pos_env_mass_friction.py`  
+- **Environment Name:** `XPos3DEnv`  
+- **Environment File:** `xy_pos_env.py`  
 - **Configuration:** `xy_pos_config_mass_friction`  
 
 **Summary:**  
@@ -48,8 +48,8 @@ Full XY-plane control of a **3-RRS parallel manipulator** under high-fidelity 3D
 ### **EXPERIMENT 007: 3D Robustness (Domain Randomization)**
 
 - **Log Name:** Experimento007  
-- **Environment Name:** `XPos2DEnv` (Student Architecture)  
-- **Environment File:** `x_pos_env_teacher_student.py`  
+- **Environment Name:** `XPos3DEnv`
+- **Environment File:** `xy_pos_env_mass_friction.py`  
 - **Configuration:** `xy_pos_config_mass_friction`  
 
 **Summary:**  

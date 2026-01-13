@@ -1,0 +1,208 @@
+<?xml version="1.0"?>
+
+<robot name="juggling_platform_2d" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <xacro:include filename="$(find balancing_platform_2d_description)/urdf/include/const.xacro"/>
+    <xacro:include filename="$(find balancing_platform_2d_description)/urdf/include/materials.xacro"/>
+
+    <link name="world"/>
+
+    <link name="left_motor">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://balancing_platform_2d_description/meshes/motor.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="silver"/>
+        </visual>
+        <inertial>
+            <origin rpy="0 0 0" xyz="${motor_com_x} ${motor_com_y} ${motor_com_z}"/>
+            <mass value="${motor_mass}"/>
+            <inertia
+                ixx="${motor_ixx}" ixy="${motor_ixy}" ixz="${motor_ixz}"
+                iyy="${motor_iyy}" iyz="${motor_iyz}"
+                izz="${motor_izz}"/>  
+        </inertial>
+    </link>
+
+    <joint name="left_base_joint" type="fixed">
+        <origin rpy="0 0 0" xyz="-0.14 0 0"/>
+        <parent link="world"/>
+        <child link="left_motor"/>
+    </joint>
+
+    <link name="left_low_arm">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0.04"/>
+            <geometry>
+                <mesh filename="package://balancing_platform_2d_description/meshes/arm.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="silver"/>
+        </visual>
+        <inertial>
+            <origin rpy="0 0 0" xyz="${arm_com_x} ${arm_com_y} ${arm_com_z}"/>
+            <mass value="${arm_mass}"/>
+            <inertia
+                ixx="${arm_ixx}" ixy="${arm_ixy}" ixz="${arm_ixz}"
+                iyy="${arm_iyy}" iyz="${arm_iyz}"
+                izz="${arm_izz}"/>  
+        </inertial>
+    </link>
+
+    <joint name="left_motor_joint" type="revolute">
+        <origin rpy="0 ${-pi/3} 0" xyz="0 0 0.014"/>
+        <parent link="left_motor"/>
+        <child link="left_low_arm"/>
+        <axis xyz="0 1 0"/>
+        <dynamics damping="${damping}" friction="${friction}"/>
+        <limit effort="${motor_torque_max}" velocity="${motor_velocity_max}" lower="${motor_position_min}" upper="${motor_position_max}"/>
+    </joint>
+
+    <link name="left_top_arm">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0.04"/>
+            <geometry>
+                <mesh filename="package://balancing_platform_2d_description/meshes/arm.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="silver"/>
+        </visual>
+        <inertial>
+            <origin rpy="0 0 0" xyz="${arm_com_x} ${arm_com_y} ${arm_com_z}"/>
+            <mass value="${arm_mass}"/>
+            <inertia
+                ixx="${arm_ixx}" ixy="${arm_ixy}" ixz="${arm_ixz}"
+                iyy="${arm_iyy}" iyz="${arm_iyz}"
+                izz="${arm_izz}"/>  
+        </inertial>
+    </link>
+
+    <joint name="left_arm_joint" type="revolute">
+        <origin rpy="0 ${2*pi/3} 0" xyz="0 0 0.08"/>
+        <parent link="left_low_arm"/>
+        <child link="left_top_arm"/>
+        <axis xyz="0 1 0"/>
+        <dynamics damping="${damping}" friction="${friction}"/>
+        <limit effort="${arm_torque_max}" velocity="${arm_velocity_max}" lower="${arm_position_min}" upper="${arm_position_max}"/>
+    </joint>
+
+    <link name="right_motor">
+        <visual>
+            <origin rpy="0 0 ${pi}" xyz="0 0 0"/>
+            <geometry>
+                <mesh filename="package://balancing_platform_2d_description/meshes/motor.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="silver"/>
+        </visual>
+        <inertial>
+            <origin rpy="0 0 0" xyz="${motor_com_x} ${motor_com_y} ${motor_com_z}"/>
+            <mass value="${motor_mass}"/>
+            <inertia
+                ixx="${motor_ixx}" ixy="${motor_ixy}" ixz="${motor_ixz}"
+                iyy="${motor_iyy}" iyz="${motor_iyz}"
+                izz="${motor_izz}"/>  
+        </inertial>
+    </link>
+
+    <joint name="right_base_joint" type="fixed">
+        <origin rpy="0 0 ${pi}" xyz="0.14 0 0"/>
+        <parent link="world"/>
+        <child link="right_motor"/>
+    </joint>
+
+    <link name="right_low_arm">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0.04"/>
+            <geometry>
+                <mesh filename="package://balancing_platform_2d_description/meshes/arm.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="silver"/>
+        </visual>
+        <inertial>
+            <origin rpy="0 0 0" xyz="${arm_com_x} ${arm_com_y} ${arm_com_z}"/>
+            <mass value="${arm_mass}"/>
+            <inertia
+                ixx="${arm_ixx}" ixy="${arm_ixy}" ixz="${arm_ixz}"
+                iyy="${arm_iyy}" iyz="${arm_iyz}"
+                izz="${arm_izz}"/>  
+        </inertial>
+    </link>
+
+    <joint name="right_motor_joint" type="revolute">
+        <origin rpy="0 ${-pi/3} 0" xyz="0 0 0.014"/>
+        <parent link="right_motor"/>
+        <child link="right_low_arm"/>
+        <axis xyz="0 1 0"/>
+        <dynamics damping="${damping}" friction="${friction}"/>
+        <limit effort="${motor_torque_max}" velocity="${motor_velocity_max}" lower="${motor_position_min}" upper="${motor_position_max}"/>
+    </joint>
+
+    <link name="right_top_arm">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 0.04"/>
+            <geometry>
+                <mesh filename="package://balancing_platform_2d_description/meshes/arm.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="silver"/>
+        </visual>
+        <inertial>
+            <origin rpy="0 0 0" xyz="${arm_com_x} ${arm_com_y} ${arm_com_z}"/>
+            <mass value="${arm_mass}"/>
+            <inertia
+                ixx="${arm_ixx}" ixy="${arm_ixy}" ixz="${arm_ixz}"
+                iyy="${arm_iyy}" iyz="${arm_iyz}"
+                izz="${arm_izz}"/>  
+        </inertial>
+    </link>
+
+    <joint name="right_arm_joint" type="revolute">
+        <origin rpy="0 ${2*pi/3} 0" xyz="0 0 0.08"/>
+        <parent link="right_low_arm"/>
+        <child link="right_top_arm"/>
+        <axis xyz="0 1 0"/>
+        <dynamics damping="${damping}" friction="${friction}"/>
+        <limit effort="${arm_torque_max}" velocity="${arm_velocity_max}" lower="${arm_position_min}" upper="${arm_position_max}"/>
+    </joint>
+
+    <link name="platform">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 -0.14 -0.005"/>
+            <geometry>
+                <mesh filename="package://balancing_platform_2d_description/meshes/platform.stl" scale="0.001 0.001 0.001"/>
+            </geometry>
+            <material name="silver"/>
+        </visual>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 -0.14 0.0"/>
+            <geometry>
+                <box size="${platform_length} ${platform_width} ${platform_height}"/>
+            </geometry>
+        </collision>
+        <inertial>
+            <origin rpy="0 0 0" xyz="${platform_com_x} ${platform_com_y} ${platform_com_z}"/>
+            <mass value="${platform_mass}"/>
+            <inertia
+                ixx="${platform_ixx}" ixy="${platform_ixy}" ixz="${platform_ixz}"
+                iyy="${platform_iyy}" iyz="${platform_iyz}"
+                izz="${platform_izz}"/>  
+        </inertial>
+    </link>
+
+    <joint name="left_platform_joint" type="revolute">
+        <origin rpy="${-pi/3} 0 ${pi/2}" xyz="0 0 0.08"/>
+        <parent link="left_top_arm"/>
+        <child link="platform"/>
+        <axis xyz="1 0 0"/>
+        <dynamics damping="${damping}" friction="${friction}"/>
+        <limit effort="${platform_torque_max}" velocity="${platform_velocity_max}" lower="${platform_position_min}" upper="${platform_position_max}"/>
+    </joint>
+
+    <!-- <joint name="right_platform_joint" type="revolute">
+        <origin rpy="${-pi/3} 0 ${pi/2}" xyz="0 0 0.08"/>
+        <parent link="right_top_arm"/>
+        <child link="platform"/>
+        <axis xyz="1 0 0"/>
+        <dynamics damping="${damping}" friction="${friction}"/>
+        <limit effort="${platform_torque_max}" velocity="${platform_velocity_max}" lower="${platform_position_min}" upper="${platform_position_max}"/>
+    </joint> -->
+
+</robot>

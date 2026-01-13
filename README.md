@@ -1,4 +1,4 @@
-# RL Controller for Autonomous Juggling Platform
+# RL Controller for Autonomous Balancing Platform
 
 ## Getting Started
 
@@ -38,6 +38,8 @@ cd ~/rl_bouncer/
 docker compose build rl_bouncer
 docker compose up -d
 docker exec -it rl_bouncer-rl_bouncer-1 bash
+source install/setup.bash
+colcon build --symlink-install
 pip install -e ./src/rl_policies
 ```
 
@@ -64,24 +66,24 @@ You can manually test the stability and response of both the Reinforcement Learn
 ### 2D Planar Platform
 **Classical Control (PD Baseline)**
 ```bash
-juggling_2d_eval_teleop_pd
+balancing_2d_eval_teleop_pd
 ```
 
 **Reinforcement Learning (RL)**
 ```bash
-juggling_2d_eval_teleop
+balancing_2d_eval_teleop
 ```
 
 ### 3D Spatial Platform (3-RRS Mechanism)
 **Classical Control (PD Baseline)**
 ```bash
-juggling_3d_eval_teleop_pd
+balancing_3d_eval_teleop_pd
 ```
 
 ### 3D Planar Platform
 **Reinforcement Learning (RL)**
 ```bash
-juggling_3d_eval_teleop
+balancing_3d_eval_teleop
 ```
 
 
