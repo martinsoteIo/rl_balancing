@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="3">
-  <name>juggling_platform_3d_description</name>
+  <name>balancing_platform_3d_description</name>
   <version>0.0.1</version>
-  <description>3D juggling platform description package</description>
+  <description>3D balancing platform description package</description>
 
   <maintainer email="martinsot2004@gmail.com">Martín Sotelo</maintainer>
   <license>MIT</license>
