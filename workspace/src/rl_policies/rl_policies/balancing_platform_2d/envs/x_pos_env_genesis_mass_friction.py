@@ -55,8 +55,8 @@ class XPos2DEnv:
             sim_options=gs.options.SimOptions(dt=self.dt, substeps=2),
             viewer_options=gs.options.ViewerOptions(
                 max_FPS=int(0.5 / self.dt),
-                camera_pos=(0.0, 1.25, 0.4),
-                camera_lookat=(0.0, 0.0, 0.3),
+                camera_pos=(0.0, -1.0, 0.3),
+                camera_lookat=(0.0, 0.0, 0.2),
                 camera_fov=40,
                 refresh_rate=15,
             ),
@@ -100,7 +100,7 @@ class XPos2DEnv:
         if add_camera:
             self.cam_0 = self.scene.add_camera(
                 res=(720, 480),
-                pos=(0.0, 1.5, 1.5),
+                pos=(0.0, -1.5, 1.5),
                 lookat=(0, 0, 0.5),
                 fov=40,
                 GUI=True,

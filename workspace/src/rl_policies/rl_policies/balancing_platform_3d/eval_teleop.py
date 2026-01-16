@@ -89,7 +89,7 @@ def evaluate_teleop(env_class, exp_name: str = "xy_pos_3d_02112025_added_similar
         obs_cfg=obs_cfg,
         reward_cfg=reward_cfg,
         command_cfg=command_cfg,
-        show_viewer=False, # Set to True to visualize
+        show_viewer=True, # Set to True to visualize
         add_camera=True,
     )
     assert env.cam_0 is not None, "cam_0 no se ha creado: revisa add_camera en XPos3DEnv"
@@ -115,7 +115,7 @@ def evaluate_teleop(env_class, exp_name: str = "xy_pos_3d_02112025_added_similar
 
             actions = policy(obs)
             obs, *_ = env.step(actions, is_train=False)
-            cam.render(rgb=False, depth=False, segmentation=False, normal=True)
+            # cam.render(rgb=False, depth=False, segmentation=False, normal=True)
             # optionally store camera images and command history
             # if env.cam_0 is not None and save_data:
             #     rgb, *_ = env.cam_0.render(
