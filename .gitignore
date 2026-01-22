@@ -52,7 +52,12 @@ workspace/src/descriptions/balancing_platform_3d_description/urdf/old
 workspace/src/rl_policies/rl_policies/balancing_platform_2d/utils/motors/
 workspace/src/rl_policies/rl_policies/balancing_platform_2d/utils/evaluate_motors_pd.py
 workspace/src/rl_policies/rl_policies/balancing_platform_2d/utils/evaluate_motors_rl.py
-
+workspace/src/rl_policies/rl_policies/balancing_platform_2d/utils/generate_metrics.py
+workspace/src/rl_policies/rl_policies/balancing_platform_2d/utils/Tensorboard/
+workspace/src/rl_policies/rl_policies/balancing_platform_2d/envs/old/
+workspace/src/rl_policies/rl_policies/balancing_platform_2d/configs/old/
+workspace/src/rl_policies/rl_policies/balancing_platform_3d/envs/old/
+workspace/src/rl_policies/rl_policies/balancing_platform_3d/configs/old/
 workspace/src/rl_policies/rl_policies/balancing_platform_3d/old
 
 
